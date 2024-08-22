@@ -10,8 +10,8 @@ from vllm.entrypoints.openai.protocol import (ChatCompletionRequest,
                                               ChatCompletionResponse,
                                               CompletionRequest)
 
-from rag import rag_query
-from db import VectorDB
+from .rag import rag_query
+from .db import VectorDB
 
 template = """<s>[INST]
 You are a friendly documentation search bot.

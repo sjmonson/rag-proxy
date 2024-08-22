@@ -1,4 +1,4 @@
-from db import VectorDB
+from .db import VectorDB
 
 def rag_query(query, db=None):
     if not db:
