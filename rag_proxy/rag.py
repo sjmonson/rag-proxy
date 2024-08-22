@@ -4,7 +4,7 @@ def rag_query(query, db=None):
     if not db:
         db = VectorDB()
     conn = db.connect_langchain()
-    results = conn.similarity_search(query=query,k=1)
+    results = conn.similarity_search(query=query,k=10)
 
     rag_query = ' '.join([doc.page_content for doc in results])
 
@@ -14,7 +14,7 @@ async def arag_query(query, db=None):
     if not db:
         db = VectorDB()
     conn = db.connect_langchain()
-    results = await conn.asimilarity_search(query=query,k=1)
+    results = await conn.asimilarity_search(query=query,k=10)
 
     rag_query = ' '.join([doc.page_content for doc in results])
 
