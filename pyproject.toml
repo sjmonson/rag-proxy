@@ -12,6 +12,7 @@ langchain-milvus = "^0.1.4"
 fastapi = {extras = ["standard"], version = "^0.112.1"}
 vllm = "^0.5.4"
 sentence-transformers = "^3.0.1"
+pydantic-settings = "^2.4.0"
 
 [tool.poetry.group.dev.dependencies]
 pyright = "^1.1.375"

@@ -1,6 +1,7 @@
 import httpx
 import asyncio
 from fastapi import FastAPI
+from pydantic import config
 from starlette.requests import Request
 from starlette.responses import StreamingResponse
 from starlette.background import BackgroundTask
@@ -9,7 +10,7 @@ import logging
 from vllm.entrypoints.openai.protocol import (ChatCompletionRequest,
                                               ChatCompletionResponse,
                                               CompletionRequest)
-
+from .config import Config
 from .rag import rag_query
 from .db import VectorDB
 
@@ -26,13 +27,15 @@ Question: {question}
 Answer:
 """
 
+config = Config()
+
 def ask(prompt):
     retrieved = rag_query(prompt, db)
     return template.format(context=retrieved, question=prompt)
 
 logger = logging.getLogger(__name__)
 
-client = httpx.AsyncClient(base_url="http://localhost:8000/", timeout=None)
+client = httpx.AsyncClient(base_url=config.upstream, timeout=None)
 
 app = FastAPI()
 

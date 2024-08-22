@@ -4,8 +4,12 @@ from langchain_milvus import Milvus
 from pymilvus import MilvusClient
 from pymilvus import connections, utility
 
+from .config import Config
+
+config = Config()
+
 class VectorDB:
-    def __init__(self, host=os.getenv("DB_HOST"), port=os.getenv("DB_PORT"), collection_name="default", embedding_model=os.getenv("EMBED_MODEL")):
+    def __init__(self, host=config.database_host, port=config.database_port, collection_name=config.database_name, embedding_model=config.embed_model):
         self.host = host
         self.port = port
         self.collection_name = collection_name
