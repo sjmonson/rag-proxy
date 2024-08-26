@@ -19,7 +19,7 @@ pyright = "^1.1.375"
 ipython = "^8.26.0"
 
 [tool.poetry.scripts]
-rag-proxy = "rag_proxy:main"
+rag-proxy = "rag_proxy.scripts:main"
 
 [build-system]
 requires = ["poetry-core"]
