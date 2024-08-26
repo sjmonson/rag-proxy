@@ -11,7 +11,7 @@ from vllm.entrypoints.openai.protocol import (ChatCompletionRequest,
                                               ChatCompletionResponse,
                                               CompletionRequest)
 from .config import Config
-from .rag import rag_query
+from .rag import arag_query
 from .db import VectorDB
 
 template = """<s>[INST]
@@ -29,8 +29,8 @@ Answer:
 
 config = Config()
 
-def ask(prompt):
-    retrieved = rag_query(prompt, db)
+async def ask(prompt):
+    retrieved = await arag_query(prompt, db)
     return template.format(context=retrieved, question=prompt)
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
         prompts = [request.prompt]
     else:
         prompts = request.prompt
-    request.prompt = [ask(prompt) for prompt in prompts]
+    request.prompt = await asyncio.gather(*[ask(prompt) for prompt in prompts])
     #logger.info(repr(request.prompt))
     #print(repr(request.prompt))
     body = request.model_dump_json(exclude_defaults=True).encode("utf-8")
