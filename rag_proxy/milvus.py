@@ -1,14 +1,16 @@
 import os
 from langchain_community.embeddings import SentenceTransformerEmbeddings
-from langchain_milvus import Milvus
+from langchain_milvus import Milvus as LangMilvus
 from pymilvus import MilvusClient
 from pymilvus import connections, utility
+
+from rag_proxy.vectordb import VectorDB
 
 from .config import Config
 
 config = Config()
 
-class VectorDB:
+class Milvus(VectorDB):
     def __init__(self, host=config.database_host, port=config.database_port, collection_name=config.database_name, embedding_model=config.embed_model):
         self.host = host
         self.port = port
@@ -22,7 +24,7 @@ class VectorDB:
         return self.client
 
     def connect_langchain(self):
-        db = Milvus(
+        db = LangMilvus(
             self.embedding_model,
             collection_name=self.collection_name,
             connection_args={"host": self.host, "port": self.port},
@@ -35,7 +37,7 @@ class VectorDB:
         connections.connect(host=self.host, port=self.port)
         if not utility.has_collection(self.collection_name):
             print("Populating VectorDB with vectors...")
-            db = Milvus.from_documents(
+            db = LangMilvus.from_documents(
                 documents,
                 self.embedding_model,
                 collection_name=self.collection_name,
@@ -44,7 +46,7 @@ class VectorDB:
             print("DB populated")
         else:
             print("DB already populated")
-            db = Milvus(
+            db = LangMilvus(
                 self.embedding_model,
                 collection_name=self.collection_name,
                 connection_args={"host": self.host, "port": self.port},

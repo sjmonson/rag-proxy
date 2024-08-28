@@ -11,8 +11,10 @@ from vllm.entrypoints.openai.protocol import (ChatCompletionRequest,
                                               ChatCompletionResponse,
                                               CompletionRequest)
 from .config import Config
-from .rag import arag_query
-from .db import VectorDB
+from .rag import RAG
+# TODO: Make DB and Embedding selectors
+from .milvus import Milvus
+from .embedding import Embedding
 
 template = """<s>[INST]
 You are a friendly documentation search bot.
@@ -29,17 +31,17 @@ Answer:
 
 config = Config()
 
-async def ask(prompt):
-    retrieved = await arag_query(prompt, db)
-    return template.format(context=retrieved, question=prompt)
-
 logger = logging.getLogger(__name__)
 
 client = httpx.AsyncClient(base_url=config.upstream, timeout=None)
 
 app = FastAPI()
 
-db = VectorDB()
+rag = RAG(Milvus(), Embedding())
+
+async def ask(prompt):
+    retrieved = await rag.aquery(prompt)
+    return template.format(context=retrieved, question=prompt)
 
 @app.post("/v1/completions")
 async def create_completion(request: CompletionRequest, raw_request: Request):
