@@ -1,7 +1,7 @@
 from rag_proxy.vectordb import VectorDB
 from rag_proxy.embedding import Embedding
 
-class RAG(object):
+class RetrievalAugmentation(object):
     def __init__(self, database: VectorDB, embed_model: Embedding):
         self.db = database
         self.embed = embed_model

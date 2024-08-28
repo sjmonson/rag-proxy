@@ -11,7 +11,7 @@ from vllm.entrypoints.openai.protocol import (ChatCompletionRequest,
                                               ChatCompletionResponse,
                                               CompletionRequest)
 from .config import Config
-from .rag import RAG
+from .ra import RetrievalAugmentation
 # TODO: Make DB and Embedding selectors
 from .milvus import Milvus
 from .embedding import Embedding
@@ -37,7 +37,7 @@ client = httpx.AsyncClient(base_url=config.upstream, timeout=None)
 
 app = FastAPI()
 
-rag = RAG(Milvus(), Embedding())
+rag = RetrievalAugmentation(Milvus(), Embedding())
 
 async def ask(prompt):
     retrieved = await rag.aquery(prompt)
