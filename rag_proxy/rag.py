@@ -1,21 +1,23 @@
-from .db import VectorDB
+from rag_proxy.vectordb import VectorDB
+from rag_proxy.embedding import Embedding
 
-def rag_query(query, db=None):
-    if not db:
-        db = VectorDB()
-    conn = db.connect_langchain()
-    results = conn.similarity_search(query=query,k=10)
+class RAG(object):
+    def __init__(self, database: VectorDB, embed_model: Embedding):
+        self.db = database
+        self.embed = embed_model
 
-    rag_query = ' '.join([doc.page_content for doc in results])
+    def query(self, query: str):
+        conn = self.db.connect_langchain()
+        results = conn.similarity_search(query=query,k=10)
 
-    return rag_query
+        rag_query = ' '.join([doc.page_content for doc in results])
 
-async def arag_query(query, db=None):
-    if not db:
-        db = VectorDB()
-    conn = db.connect_langchain()
-    results = await conn.asimilarity_search(query=query,k=10)
+        return rag_query
 
-    rag_query = ' '.join([doc.page_content for doc in results])
+    async def aquery(self, query: str):
+        conn = self.db.connect_langchain()
+        results = await conn.asimilarity_search(query=query,k=10)
 
-    return rag_query
+        rag_query = ' '.join([doc.page_content for doc in results])
+
+        return rag_query
