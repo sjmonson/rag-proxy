@@ -38,7 +38,7 @@ client = httpx.AsyncClient(base_url=config.upstream, timeout=None)
 app = FastAPI()
 
 async def ask(prompt: str) -> str:
-    embedding = caikit_connect(config.embed_model, config.embed_upstream)
+    embedding = caikit_connect(config.embed_upstream, config.embed_model)
     database = milvus_connect(config.database_host, config.database_port, embedding, config.database_name)
     ra = RetrievalAugmentation(database, embedding, template, 10)
 
