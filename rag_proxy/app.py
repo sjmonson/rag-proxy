@@ -39,7 +39,7 @@ app = FastAPI()
 
 async def ask(prompt: str) -> str:
     embedding = caikit_connect(config.embed_model, config.embed_upstream)
-    database = milvus_connect(config.database_name, config.database_port, embedding, config.database_name)
+    database = milvus_connect(config.database_host, config.database_port, embedding, config.database_name)
     ra = RetrievalAugmentation(database, embedding, template, 10)
 
     result = ra.query(prompt)
