@@ -19,7 +19,9 @@ class CaiKitEmbeddings(Embeddings):
             timeout = 60
         )
 
-        return response['result']['data']['values']
+        vectors = [ res['data']['values'] for res in response['results']['vectors'] ]
+
+        return vectors
 
     def embed_query(self, text: str) -> list[float]:
         client = HttpClient(self.host)
@@ -34,6 +36,4 @@ class CaiKitEmbeddings(Embeddings):
             timeout = 60
         )
 
-        vectors = [ res['data']['values'] for res in response['results']['vectors'] ]
-
-        return vectors
+        return response['result']['data']['values']
