@@ -1,13 +1,27 @@
 from caikit_nlp_client import HttpClient
+from langchain_core.embeddings import Embeddings
 
-from rag_proxy.embedding import *
-
-class CaiKitEmbedding(Embedding):
+class CaiKitEmbeddings(Embeddings):
     def __init__(self, host: str, model_name: str):
         self.host = host
         self.model = model_name
 
-    async def aembedding(self, text: str) -> EmbeddingResult:
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        client = HttpClient(self.host)
+
+        response = client.embedding_tasks(
+            model_id=self.model,
+            texts=texts,
+            # TODO: Do we want more tunables?
+            # parameters={
+            #     "truncate_input_tokens": self.model_max_input_tokens
+            # },
+            timeout = 60
+        )
+
+        return response['result']['data']['values']
+
+    def embed_query(self, text: str) -> list[float]:
         client = HttpClient(self.host)
 
         response = client.embedding(
@@ -20,7 +34,6 @@ class CaiKitEmbedding(Embedding):
             timeout = 60
         )
 
-        vec: Vector = response['result']['data']['values']
-        input_tokens: int = response['input_token_count']
+        vectors = [ res['data']['values'] for res in response['results']['vectors'] ]
 
-        return EmbeddingResult(embedding=vec, input_tokens=input_tokens)
+        return vectors
