@@ -7,11 +7,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-langchain-community = "^0.2.12"
+langchain-core = "^0.2.12"
 langchain-milvus = "^0.1.4"
 fastapi = {extras = ["standard"], version = "^0.112.1"}
 vllm = "^0.5.4"
-sentence-transformers = "^3.0.1"
 pydantic-settings = "^2.4.0"
 caikit-nlp-client = { git = "https://github.com/opendatahub-io/caikit-nlp-client.git" }
 
