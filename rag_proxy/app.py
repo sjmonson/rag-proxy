@@ -15,6 +15,7 @@ from rag_proxy.ra import RetrievalAugmentation
 # TODO: Make DB and Embedding selectors
 from rag_proxy.utility import caikit_connect, milvus_connect
 
+# TODO: Put prompt in config
 template = """<s>[INST]
 You are a friendly documentation search bot.
 Use following piece of context to answer the question.
@@ -32,6 +33,7 @@ config = Config()
 
 logger = logging.getLogger(__name__)
 
+# Our upstream client
 client = httpx.AsyncClient(base_url=config.upstream, timeout=None)
 
 app = FastAPI()
@@ -51,18 +53,32 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
         prompts = [request.prompt]
     else:
         prompts = request.prompt
+
+    # Perform Embedding and Retrieval on prompt
     request.prompt = await asyncio.gather(*[ask(prompt) for prompt in prompts])
     #logger.info(repr(request.prompt))
     #print(repr(request.prompt))
+
+    # Re-encode updated message body
     body = request.model_dump_json(exclude_defaults=True).encode("utf-8")
+
+    # Update headers to match new body
     headers = raw_request.headers.mutablecopy()
     headers["content-length"] = str(len(body))
+
+    # Craft upstream request
     url = httpx.URL(path=raw_request.url.path,
                     query=raw_request.url.query.encode("utf-8"))
     rp_req = client.build_request(raw_request.method, url,
                                   headers=headers.raw,
                                   content=body)
+
+    # Send request upstream
     rp_resp = await client.send(rp_req, stream=True)
+
+    # Stream back the upstream response
+    # TODO: This should return diffently based on
+    #   rp_resp.status_code and if request is streaming
     return StreamingResponse(
         rp_resp.aiter_raw(),
         status_code=rp_resp.status_code,
@@ -70,6 +86,9 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
         background=BackgroundTask(rp_resp.aclose),
     )
 
+# TODO: /v1/chat/completions
+
+# TODO: Generic route that passes to upstream
 # async def _reverse_proxy(request: Request):
 #     url = httpx.URL(path=request.url.path,
 #                     query=request.url.query.encode("utf-8"))

@@ -4,15 +4,18 @@ from langchain_core.vectorstores import VectorStore
 from langchain_core.embeddings import Embeddings
 
 class RetrievalUsage(BaseModel):
+    """ Timing model for VectorDB Retrieval """
     embedding: float
     database: float
 
 class RetrievalResponse(BaseModel):
+    """ Response model for VectorDB Retrieval """
     response: str
     embedding: list[float]
     usage: RetrievalUsage
 
 class RetrievalAugmentation(object):
+    """ A VectorDB Retrieval factory """
     def __init__(
             self,
             database: VectorStore,
