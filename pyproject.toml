@@ -16,9 +16,12 @@ pydantic-settings = "^2.4.0"
 caikit-nlp-client = { git = "https://github.com/opendatahub-io/caikit-nlp-client.git" }
 
 [tool.poetry.group.dev.dependencies]
-pyright = "^1.1.375"
-ipython = "^8.26.0"
 pre-commit = "^3.8.0"
+
+
+[tool.poetry.group.tools.dependencies]
+pyright = "^1.1.378"
+ipython = "^8.27.0"
 
 [tool.poetry.scripts]
 rag-proxy = "rag_proxy.scripts:main"
