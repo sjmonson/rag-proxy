@@ -3,9 +3,10 @@ repos:
     rev: '1.8.3'
     hooks:
     -   id: poetry-check
-        args: ["--lock"]
-    -   name: Export requirements.txt
+    -   id: poetry-lock
+        args: ["--no-update"]
+    -   name: requirements.txt
         id: poetry-export
-    -   name: Export requirements-dev.txt
+    -   name: requirements-dev.txt
         id: poetry-export
         args: ["--only", "dev", "-o", "requirements-dev.txt"]
