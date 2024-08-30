@@ -1,6 +1,7 @@
 import httpx
 import asyncio
 from fastapi import FastAPI
+from langchain_community.embeddings import databricks
 from pydantic import config
 from starlette.requests import Request
 from starlette.responses import StreamingResponse
@@ -10,9 +11,10 @@ import logging
 from vllm.entrypoints.openai.protocol import (ChatCompletionRequest,
                                               ChatCompletionResponse,
                                               CompletionRequest)
-from .config import Config
-from .rag import arag_query
-from .db import VectorDB
+from rag_proxy.config import Config
+from rag_proxy.ra import RetrievalAugmentation
+# TODO: Make DB and Embedding selectors
+from rag_proxy.utility import caikit_connect, milvus_connect
 
 template = """<s>[INST]
 You are a friendly documentation search bot.
@@ -29,17 +31,20 @@ Answer:
 
 config = Config()
 
-async def ask(prompt):
-    retrieved = await arag_query(prompt, db)
-    return template.format(context=retrieved, question=prompt)
-
 logger = logging.getLogger(__name__)
 
 client = httpx.AsyncClient(base_url=config.upstream, timeout=None)
 
 app = FastAPI()
 
-db = VectorDB()
+async def ask(prompt: str) -> str:
+    embedding = caikit_connect(config.embed_upstream, config.embed_model)
+    database = milvus_connect(config.database_host, config.database_port, embedding, config.database_name)
+    ra = RetrievalAugmentation(database, embedding, template, 10)
+
+    result = ra.query(prompt)
+    # TODO: Log timings
+    return result.response
 
 @app.post("/v1/completions")
 async def create_completion(request: CompletionRequest, raw_request: Request):
