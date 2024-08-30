@@ -2,6 +2,7 @@ from caikit_nlp_client import HttpClient
 from langchain_core.embeddings import Embeddings
 
 class CaiKitEmbeddings(Embeddings):
+    """ Langchain Embeddings Wrapper for Caikit """
     def __init__(self, host: str, model_name: str):
         self.host = host
         self.model = model_name
@@ -19,6 +20,8 @@ class CaiKitEmbeddings(Embeddings):
             timeout = 60
         )
 
+        # Return only the embeddings
+        # TODO: Input check
         vectors = [ res['data']['values'] for res in response['results']['vectors'] ]
 
         return vectors
@@ -36,4 +39,6 @@ class CaiKitEmbeddings(Embeddings):
             timeout = 60
         )
 
+        # Return only the embeddings
+        # TODO: Input check
         return response['result']['data']['values']
