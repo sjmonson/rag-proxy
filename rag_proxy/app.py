@@ -1,7 +1,6 @@
 import httpx
 import asyncio
 from fastapi import FastAPI
-from langchain_community.embeddings import databricks
 from pydantic import config
 from starlette.requests import Request
 from starlette.responses import StreamingResponse

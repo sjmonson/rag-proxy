@@ -1,3 +1,3 @@
-from .scripts import main
+from rag_proxy.scripts import main
 
 main()

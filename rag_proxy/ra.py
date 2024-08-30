@@ -1,5 +1,4 @@
 import time
-from click import prompt
 from pydantic import BaseModel
 from langchain_core.vectorstores import VectorStore
 from langchain_core.embeddings import Embeddings
