@@ -6,6 +6,7 @@ from starlette.requests import Request
 from starlette.responses import StreamingResponse
 from starlette.background import BackgroundTask
 import logging
+from http import HTTPStatus
 
 from vllm.entrypoints.openai.protocol import (ChatCompletionRequest,
                                               ChatCompletionResponse,
@@ -54,6 +55,9 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
     else:
         prompts = request.prompt
 
+    # Are we streaming?
+    streaming: bool = request.stream if request.stream else False
+
     # Perform Embedding and Retrieval on prompt
     request.prompt = await asyncio.gather(*[ask(prompt) for prompt in prompts])
     #logger.info(repr(request.prompt))
@@ -74,17 +78,22 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
                                   content=body)
 
     # Send request upstream
-    rp_resp = await client.send(rp_req, stream=True)
+    rp_resp = await client.send(rp_req, stream=streaming)
 
-    # Stream back the upstream response
-    # TODO: This should return diffently based on
-    #   rp_resp.status_code and if request is streaming
-    return StreamingResponse(
-        rp_resp.aiter_raw(),
-        status_code=rp_resp.status_code,
-        headers=rp_resp.headers,
-        background=BackgroundTask(rp_resp.aclose),
-    )
+    if not HTTPStatus(rp_resp.status_code).is_success:
+        # Just return upstream on error
+        return rp_resp
+    elif streaming:
+        # Stream back the upstream response
+        return StreamingResponse(
+            rp_resp.aiter_raw(),
+            status_code=rp_resp.status_code,
+            headers=rp_resp.headers,
+            background=BackgroundTask(rp_resp.aclose),
+        )
+    else:
+        # Just return upstream on normal response
+        return rp_resp
 
 # TODO: /v1/chat/completions
 
