@@ -6,12 +6,14 @@ def milvus_connect(
         host: str,
         port: str | int,
         embedding_model: Embeddings,
-        name: str = 'default'
+        name: str = 'default',
+        **kwargs
 ) -> Milvus:
     db = Milvus(
         embedding_model,
         collection_name=name,
         connection_args={"host": host, "port": port},
+        **kwargs
     )
     return db
 
