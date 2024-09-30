@@ -1,15 +1,14 @@
+import json
 import httpx
 import asyncio
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import config
 from starlette.requests import Request
 from starlette.responses import StreamingResponse
 from starlette.background import BackgroundTask
+from typing import Any
 import logging
 
-from vllm.entrypoints.openai.protocol import (ChatCompletionRequest,
-                                              ChatCompletionResponse,
-                                              CompletionRequest)
 from rag_proxy.config import Config
 from rag_proxy.ra import RetrievalAugmentation
 # TODO: Make DB and Embedding selectors
@@ -48,19 +47,21 @@ async def ask(prompt: str) -> str:
     return result.response
 
 @app.post("/v1/completions")
-async def create_completion(request: CompletionRequest, raw_request: Request):
-    if isinstance(request.prompt, str):
-        prompts = [request.prompt]
+async def create_completion(request: dict[Any, Any], raw_request: Request):
+    if request.get('prompt') == None:
+        raise HTTPException(status_code=400, detail='Missing prompt')
+    if isinstance(request['prompt'], str):
+        prompts = [ request['prompt'] ]
     else:
-        prompts = request.prompt
+        prompts = request['prompt']
 
     # Perform Embedding and Retrieval on prompt
-    request.prompt = await asyncio.gather(*[ask(prompt) for prompt in prompts])
+    request['prompt'] = await asyncio.gather(*[ask(prompt) for prompt in prompts])
     #logger.info(repr(request.prompt))
     #print(repr(request.prompt))
 
     # Re-encode updated message body
-    body = request.model_dump_json(exclude_defaults=True).encode("utf-8")
+    body = json.dumps(request).encode("utf-8")
 
     # Update headers to match new body
     headers = raw_request.headers.mutablecopy()
