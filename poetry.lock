@@ -467,20 +467,20 @@ wmi = ["wmi (>=1.5.1)"]
 
 [[package]]
 name = "docling"
-version = "1.11.0"
+version = "1.16.1"
 description = "Docling PDF conversion package"
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "docling-1.11.0-py3-none-any.whl", hash = "sha256:cf5daa260c7b6c65a847706ad761347ee36210e4babbce8be51bdd12bf6e43fb"},
-    {file = "docling-1.11.0.tar.gz", hash = "sha256:120b7664bb20cec7def3b87a7384fcd81b7b6842c0fc2ebc73043678fe903704"},
+    {file = "docling-1.16.1-py3-none-any.whl", hash = "sha256:b8f517f1a4a19f4048705234dc21ba2e12092bdb327ea07fdbd43ba241883c5c"},
+    {file = "docling-1.16.1.tar.gz", hash = "sha256:c036283ea5c00efddc550fbff708c66e4f7b1f71df4b026e479a13fef8737de2"},
 ]
 
 [package.dependencies]
 certifi = ">=2024.7.4"
-deepsearch-glm = ">=0.21.0,<0.22.0"
-docling-core = ">=1.2.0,<2.0.0"
-docling-ibm-models = ">=1.1.7,<2.0.0"
+deepsearch-glm = ">=0.21.1,<0.22.0"
+docling-core = ">=1.6.2,<2.0.0"
+docling-ibm-models = ">=1.3.1,<2.0.0"
 docling-parse = ">=1.2.0,<2.0.0"
 easyocr = ">=1.7,<2.0"
 filetype = ">=1.2.0,<2.0.0"
@@ -492,16 +492,25 @@ pypdfium2 = ">=4.30.0,<5.0.0"
 requests = ">=2.32.3,<3.0.0"
 rtree = ">=1.3.0,<2.0.0"
 scipy = ">=1.14.1,<2.0.0"
+torch = [
+    {version = ">=2.2.2,<3.0.0", markers = "sys_platform != \"darwin\" or platform_machine != \"x86_64\""},
+    {version = ">=2.2.2,<2.3.0", markers = "sys_platform == \"darwin\" and platform_machine == \"x86_64\""},
+]
+torchvision = [
+    {version = ">=0,<1", markers = "sys_platform != \"darwin\" or platform_machine != \"x86_64\""},
+    {version = ">=0.17.2,<0.18.0", markers = "sys_platform == \"darwin\" and platform_machine == \"x86_64\""},
+]
+typer = ">=0.12.5,<0.13.0"
 
 [[package]]
 name = "docling-core"
-version = "1.3.0"
+version = "1.7.0"
 description = "A python library to define and validate data types in Docling."
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "docling_core-1.3.0-py3-none-any.whl", hash = "sha256:31779b9a5cce7e925d01d3b78fa8a835c531fa74646205ae2a8721f534eb8b27"},
-    {file = "docling_core-1.3.0.tar.gz", hash = "sha256:beb55fb0018c912209bdf12958e4cf5a6c8bbe73fd097d03da25fc3979260fab"},
+    {file = "docling_core-1.7.0-py3-none-any.whl", hash = "sha256:f4b94d1c21bbf4f7e945609d0ac2253ba29cfd120be08785440ee8d19118dd8b"},
+    {file = "docling_core-1.7.0.tar.gz", hash = "sha256:edebd5ebfef1478782dccae50f236f364f8af02d21789790a3bbb8ddb26b42d3"},
 ]
 
 [package.dependencies]
@@ -510,7 +519,6 @@ jsonref = ">=1.1.0,<2.0.0"
 jsonschema = ">=4.16.0,<5.0.0"
 pandas = ">=2.2.2,<3.0.0"
 pydantic = ">=2.6.0,<3.0.0"
-pyproject-toml = ">=0.0.10,<0.0.11"
 tabulate = ">=0.9.0,<0.10.0"
 
 [[package]]
@@ -1475,8 +1483,8 @@ jsonpatch = ">=1.33,<2.0"
 langsmith = ">=0.1.112,<0.2.0"
 packaging = ">=23.2,<25"
 pydantic = [
-    {version = ">=2.7.4,<3.0.0", markers = "python_full_version >= \"3.12.4\""},
     {version = ">=1,<3", markers = "python_full_version < \"3.12.4\""},
+    {version = ">=2.7.4,<3.0.0", markers = "python_full_version >= \"3.12.4\""},
 ]
 PyYAML = ">=5.3"
 tenacity = ">=8.1.0,<8.4.0 || >8.4.0,<9.0.0"
@@ -1527,8 +1535,8 @@ files = [
 httpx = ">=0.23.0,<1"
 orjson = ">=3.9.14,<4.0.0"
 pydantic = [
-    {version = ">=2.7.4,<3.0.0", markers = "python_full_version >= \"3.12.4\""},
     {version = ">=1,<3", markers = "python_full_version < \"3.12.4\""},
+    {version = ">=2.7.4,<3.0.0", markers = "python_full_version >= \"3.12.4\""},
 ]
 requests = ">=2,<3"
 
@@ -2618,8 +2626,8 @@ files = [
 annotated-types = ">=0.4.0"
 pydantic-core = "2.20.1"
 typing-extensions = [
-    {version = ">=4.12.2", markers = "python_version >= \"3.13\""},
     {version = ">=4.6.1", markers = "python_version < \"3.13\""},
+    {version = ">=4.12.2", markers = "python_version >= \"3.13\""},
 ]
 
 [package.extras]
@@ -2820,23 +2828,6 @@ files = [
     {file = "pypdfium2-4.30.0-py3-none-win_arm64.whl", hash = "sha256:119b2969a6d6b1e8d55e99caaf05290294f2d0fe49c12a3f17102d01c441bd29"},
     {file = "pypdfium2-4.30.0.tar.gz", hash = "sha256:48b5b7e5566665bc1015b9d69c1ebabe21f6aee468b509531c3c8318eeee2e16"},
 ]
-
-[[package]]
-name = "pyproject-toml"
-version = "0.0.10"
-description = "Project intend to implement PEP 517, 518, 621, 631 and so on."
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyproject-toml-0.0.10.tar.gz", hash = "sha256:f0ce0e9934ecb00c0e529b4a1c380edd3034c4be65516769c5f080bdb23dfcb3"},
-    {file = "pyproject_toml-0.0.10-py3-none-any.whl", hash = "sha256:257a7070617e1a0bcfd8f790817b30bd9193876023a9b9e7a6b4fc976acf4c3e"},
-]
-
-[package.dependencies]
-jsonschema = "*"
-setuptools = ">=42"
-toml = "*"
-wheel = "*"
 
 [[package]]
 name = "pyreadline3"
@@ -3728,17 +3719,6 @@ xml = ["defusedxml", "lxml"]
 zarr = ["fsspec", "zarr"]
 
 [[package]]
-name = "toml"
-version = "0.10.2"
-description = "Python Library for Tom's Obvious, Minimal Language"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-files = [
-    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
-    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
-]
-
-[[package]]
 name = "torch"
 version = "2.2.2+cpu"
 description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
@@ -4362,21 +4342,7 @@ files = [
     {file = "websockets-13.0.tar.gz", hash = "sha256:b7bf950234a482b7461afdb2ec99eee3548ec4d53f418c7990bb79c620476602"},
 ]
 
-[[package]]
-name = "wheel"
-version = "0.44.0"
-description = "A built-package format for Python"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "wheel-0.44.0-py3-none-any.whl", hash = "sha256:2376a90c98cc337d18623527a97c31797bd02bad0033d41547043a1cbfbe448f"},
-    {file = "wheel-0.44.0.tar.gz", hash = "sha256:a29c3f2817e95ab89aa4660681ad547c0e9547f20e75b0562fe7723c9a2a9d49"},
-]
-
-[package.extras]
-test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
-
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "4a10db97d24de47edf49084c007e2027cad4fac23aefba08c9fcffb313ef6605"
+content-hash = "68e2ab41fd72c0c307663c0f292e22c4902840f342bb592ca4f8b0328cbdfb9e"
